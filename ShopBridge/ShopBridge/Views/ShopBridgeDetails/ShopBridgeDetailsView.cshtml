@@ -1,0 +1,99 @@
+﻿@model ShopBridge.Models.ShopBridgeDetails
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $("#btncreate").click(function (e) {
+            window.location.href = "../ShopBridgeDetails/ShopBridgeDetails";
+        });
+
+
+        $('#grdShopBridgeView').DataTable({
+            "bPaginate": false,
+            "bLengthChange": false,
+            "bFilter": true,
+            "bInfo": false,
+            "bAutoWidth": false,
+            "ajax": {
+                "url": "/ShopBridgeDetails/FetchSavedDetailsGrids",
+                "type": "GET",
+                "datatype": "json",
+            },
+            "columns": [
+                { "data": "ItemName", "autoWidth": true },
+                 { "data": "NoofItems", "autoWidth": true },
+                 { "data": "PricePerItem", "autoWidth": true },
+                 { "data": "TotalAmount", "autoWidth": true },
+                 { "data": "PurchaseDate", "autoWidth": true },
+                  { "data": "Description", "autoWidth": true },
+                    {
+                        "data": "Pkid", "autoWidth": true, "sortable": false, "render": function (data, type, row) {
+                            return '<a style="color:red;" href="javascript:EditClick(\'' + row.Pkid + '\')"  class="far fa-edit" title="Edit"></a>' + '' + '<a style="color:red;" href="javascript:DeleteClick(\'' + row.Pkid + '\')"  class="fas fa-trash-alt" title="Delete"></a>';
+                        }
+                    },
+
+            ],
+            responsive: true
+        });
+
+    });
+    function EditClick(data) {
+        var url = '@Url.Action("ItemEdit", "ShopBridgeDetails")';
+        $.post(url, {
+            SelectedRow: data,
+        },
+             function () {
+                 window.location.href = "../ShopBridgeDetails/ShopBridgeDetails";
+             });
+    }
+    function DeleteClick(data) {
+        var url = '@Url.Action("DeleteItem", "ShopBridgeDetails")';
+        $.post(url, {
+            SelectedRow: data,
+        },
+             function () {
+                 alert("Shop Bridge Item Deleted Successfully.");
+                 window.location.href = "../ShopBridgeDetails/ShopBridgeDetailsView";
+
+             });
+    }
+</script>
+
+        <section id="content" class="seipkon-content-wrapper active">
+
+            <div class="page-content">
+                <div class="page-header">
+
+                    <input id="btncreate" type="button" class="btn btn-success pull-right" name="Create" value="Create" style="float: right" />
+                </div>
+                <br />
+                <div style="margin-top: 5px"></div>
+                <div class="col-md-12">
+                    <table id="grdShopBridgeView" class="table display table-bordered">
+                        <thead>
+                            <tr style="text-align: center;">
+                                <th style="text-align: center">Name</th>
+                                <th style="text-align: center">No.of Items</th>
+                                <th style="text-align: center">Price per Item</th>
+                                <th style="text-align: center">Total Amount</th>
+                                <th style="text-align: center">Purchase Date</th>
+                                <th style="text-align: center">Description</th>
+                                <th style="text-align: center">Action</th>
+
+
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </section>
+   

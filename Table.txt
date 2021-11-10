@@ -1,0 +1,22 @@
+<<<<<<< HEAD
+create table tbl_shop_bridge(
+sb_id serial primary key ,
+sb_name varchar(30) not null,
+sb_quantity int4 not null,
+sb_price numeric(10,2) not null,
+sb_description varchar(250),
+sb_purchase_date date not null,
+sb_cron TIMESTAMP default now()
+
+=======
+create table tbl_shop_bridge(
+sb_id serial primary key ,
+sb_name varchar(30) not null,
+sb_quantity int4 not null,
+sb_price numeric(10,2) not null,
+sb_description varchar(250),
+sb_purchase_date date not null,
+sb_cron TIMESTAMP default now()
+
+>>>>>>> 6fcf09e (Uploading Details)
+);

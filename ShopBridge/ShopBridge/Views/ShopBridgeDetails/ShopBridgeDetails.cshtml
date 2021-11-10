@@ -1,0 +1,182 @@
+﻿@model ShopBridge.Models.ShopBridgeDetails
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (Model.StatusID > 0)
+{
+    <script type="text/javascript">
+        alert('@Model.Message');
+        // alertwithredirect('Success', , "Success", '@Url.Action("ShopBridgeDetailsView", "ShopBridgeDetails")');
+        window.location.href = "../ShopBridgeDetails/ShopBridgeDetailsView";
+
+    </script>
+}   
+else if (Model.StatusID < 0)
+{
+    <script type="text/javascript">
+        alert('@Model.Message');
+        window.location.href = "../ShopBridgeDetails/ShopBridgeDetails";
+      </script>
+}
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
+
+<style>
+    legend {
+        background-color: #ffd800;
+        color: #fff;
+        padding: 3px 60px;
+    }
+    #content {
+       
+        padding-top: 7rem!important;
+    }
+    .output {
+        font: 1rem 'Fira Sans', sans-serif;
+    }
+
+    input {
+        margin: .4rem;
+    }
+</style>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#txtPurchaseDate').datepicker({
+           // format: "dd-mm-yyyy",
+            endDate: "today",
+            autoclose: true
+        });
+
+        $('#txtNoofItems').keypress(function (event) {
+            if (((event.which != 46 || (event.which == 46 && $(this).val() == ''))) && (event.which < 48 || event.which > 57)) {
+                event.preventDefault();
+            }
+        }).on('paste', function (event) {
+            event.preventDefault();
+        });
+
+
+        $('#txtPricePerItem').keypress(function (event) {
+            if (((event.which != 46 || (event.which == 46 && $(this).val() == '')) ||
+                    $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+                event.preventDefault();
+            }
+        }).on('paste', function (event) {
+            event.preventDefault();
+        });
+
+
+        $("#btnBack").click(function (e) {
+            window.location.href = "../ShopBridgeDetails/ShopBridgeDetailsView";
+        });
+
+        $("#btnReset").click(function (e) {
+            window.location.href = "../ShopBridgeDetails/ShopBridgeDetails";
+        });
+
+        $("#btnSave").click(function (e) {
+            debugger;
+            TotalAmount();
+            var ItemName = $('#txtItemName').val();
+            var NoOfItems = $('#txtNoofItems').val();
+            var PerItemPrice = $('#txtPricePerItem').val();
+            var PurchaseDate = $('#txtPurchaseDate').val();
+            if (ItemName.trim() == "") {
+                $('#errorBlock').css("display", "block");
+                $('#lblMessage').text("Please Enter Item Name");
+                $("#txtItemName").focus();
+                return false;
+            } else if (NoOfItems.trim() == "") {
+                $('#errorBlock').css("display", "block");
+                $('#lblMessage').text("Please Enter No.Of Items");
+                $("#txtNoofItems").focus();
+                return false;
+            } else if (PerItemPrice.trim() == "") {
+                $('#errorBlock').css("display", "block");
+                $('#lblMessage').text("Please Enter Amount Per Item");
+                $("#txtPricePerItem").focus();
+                return false;
+            } else if (PurchaseDate.trim() == "") {
+                $('#errorBlock').css("display", "block");
+                $('#lblMessage').text("Please Select Purchase Date");
+                $("#txtPurchaseDate").focus();
+                return false;
+            }
+        });
+    });
+    function TotalAmount() {
+        debugger;
+        var NoOfItems = $('#txtNoofItems').val();
+        var PerItemPrice = $('#txtPricePerItem').val();
+        if (NoOfItems.trim() != "" && parseInt(NoOfItems) > 0 && PerItemPrice.trim() != "" && parseFloat(PerItemPrice) > 0) {
+            $('#txtTotalAmount').val((parseInt(NoOfItems) * (parseFloat(PerItemPrice))));
+        }
+    }
+
+</script>
+@using (Html.BeginForm())
+{
+    <section id="content" class="seipkon-content-wrapper active">
+        <div class="page-content">
+            <div class="border">
+                <div class="container-fluid">
+                    <fieldset class="scheduler-border">
+                        <legend class="scheduler-border">Shop Bridge Details</legend>
+                        <div class="page-content">
+                            <div class="alert alert-danger" id="errorBlock" style="display: none">
+                                <label id="lblMessage"></label>
+                            </div>
+                            <div class="row">
+                                @Html.HiddenFor(m => m.Pkid, new { @class = "form-control", id = "txtBnId" })
+                                <div class="col-md-3">
+                                    <label>Item Name<span class="mandatory">*</span></label>
+                                    @Html.TextBoxFor(m => m.ItemName, new { @class = "form-control", autocomplete = "off", id = "txtItemName", @maxlength = 30 })
+                                </div>
+                                <div class="col-md-1"></div>
+                                <div class="col-md-3">
+                                    <label>No.of Items<span class="mandatory">*</span></label>
+                                    @Html.TextBoxFor(m => m.NoofItems, new { @class = "form-control", autocomplete = "off", id = "txtNoofItems", @maxlength = 3, @oncopy = "return false", @onpaste = "return false", @onchange = "TotalAmount()" })
+                                </div>
+                                <div class="col-md-1"></div>
+                                <div class="col-md-3">
+                                    <label>Amount Per Item<span class="mandatory">*</span></label>
+                                    @Html.TextBoxFor(m => m.PricePerItem, new { @class = "form-control", autocomplete = "off", id = "txtPricePerItem", @maxlength = 6, @onchange = "TotalAmount()" })
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label>Total Amount</label>
+                                    @Html.TextBoxFor(m => m.TotalAmount, new { id = "txtTotalAmount", autocomplete = "off", @class = "form-control", @readonly = true })
+                                </div>
+                                <div class="col-md-1"></div>
+
+                                <div class="col-md-3">
+                                    <label for="Employment Status">Purchase Date<span class="required">*</span>  </label>
+
+                                    @Html.TextBoxFor(m => m.PurchaseDate, new { @class = "form-control", autocomplete = "off", id = "txtPurchaseDate", @readonly = true })
+                                </div>
+                                <div class="col-md-1"></div>
+
+                                <div class="col-md-3">
+                                    <label for="Subject">Description</label>
+                                    @Html.TextAreaFor(m => m.Description, new { id = "txtDescription", autocomplete = "off", @class = "form-control", style = "resize:none", @maxsize = 250 })
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 34px" class="text-center footer">
+                                <input id="btnSave" type="submit" class="btn btn-success" name="btnSave" value='@Model.Button' />
+                                <input id="btnReset" type="button" value="Reset" class="btn btn-danger" name="btnReset">
+                                <input id="btnBack" type="button" value="Back" class="btn btn-info" name="btnBack">
+
+                            </div>
+                            <br />
+
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+    </section>
+}
